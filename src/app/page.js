@@ -12,14 +12,8 @@ function Home() {
   return (
    
    <>
-    <Navbar />
-    <HeroSection />
-    <HowItWorks />
-    <AgencyTypes />
-    <Reviews />
-    <QuizCTA />
-    <FinalCTA />
-    <Footer />
+    
+    
    
    </>
    
