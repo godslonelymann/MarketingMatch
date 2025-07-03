@@ -10,7 +10,7 @@ function Navbar(){
 
     const [MenuOpen, setMenuOpen] = useState(false)
 
-    const [buttonVisible, setButtonVisible] = useState(true)
+    // const [buttonVisible, setButtonVisible] = useState(true)
     
     function HandleMobileMenu(){
         setMenuOpen(!MenuOpen);
@@ -18,7 +18,7 @@ function Navbar(){
     }
     return(
         <>
-            <div className="flex justify-around mt-7 items-center text-base">
+            <div className="flex justify-around mt-7 items-center text-base ">
                 <Link 
                 className=" "
                 href="/">MarketingMatch</Link>
@@ -39,31 +39,33 @@ function Navbar(){
                 </div>
             </div>
 
-            {/* Mobile Navbar Menu */}
+            {/* Mobile Navbar Menu : work on it*/} 
 
-            {MenuOpen && 
-                
-                
-                <div className="fixed h-1/2 w-screen z-50 bg-black opacity-80 text-white mt-5 text-2xl flex flex-col items-center gap-5 p-10 ">
-                
+            {MenuOpen && <div className="flex justify-center">
+                    <div className="bg-stone-100 flex justify-center text-2xl  flex-col rounded-3xl p-5 gap-5 mt-5 fixed w-[95%] md:hidden ">
                     <Link 
-                    onClick={() => setMenuOpen(false)}
+                    className="hover:bg-[#2563EB] hover:text-white p-2 rounded-xl"
                     href="/HowItWorks">How it Works</Link>
                     <Link 
-                    onClick={() => setMenuOpen(false)}
+                    className="hover:bg-[#2563EB] hover:text-white p-2 rounded-xl"
                     href="/AgencyTypes">Agency Types</Link>
                     <Link 
-                    onClick={() => setMenuOpen(false)}
+                    className="hover:bg-[#2563EB] hover:text-white p-2 rounded-xl"
                     href="/About">About</Link>
                     <Link 
-                    onClick={() => setMenuOpen(false)}
-                    className=""
-                    href="/Login">Login</Link>
+                    className="hover:bg-[#2563EB] hover:text-white p-2 rounded-xl"
+                    href="/AgencyTypes">Login</Link>
                     <Link 
-                    onClick={() => setMenuOpen(false)}
-                    className="p-2 px-10 bg-[#2563EB] rounded-3xl text-white"
+                    className="hover:bg-[#2563EB] hover:text-white p-2 rounded-xl"
                     href="/FindYourAgency">Find your Agency...</Link>
+            </div>
+                
+                
+                
                 </div>}
+
+          
+            
         </>
     )
 }
