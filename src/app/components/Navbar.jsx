@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import CTAButton from "./ui/CTAButton";
 
 // import About from "../About/page";
 
@@ -18,7 +19,7 @@ function Navbar(){
     }
     return(
         <>
-            <div className="flex justify-around mt-7 items-center text-base ">
+            <div className="flex justify-between mx-10 mt-5 md:mx-auto max-w-screen-xl items-center text-base">
                 <Link 
                 className=" "
                 href="/">MarketingMatch</Link>
@@ -33,9 +34,7 @@ function Navbar(){
                     <Link href="/AgencyTypes">Agency Types</Link>
                     <Link href="/About">About</Link>
                     <Link href="/AgencyTypes">Login</Link>
-                    <Link 
-                    className="p-2 px-10 bg-[#2563EB] rounded-3xl text-white"
-                    href="/FindYourAgency">Find your Agency...</Link>
+                    <CTAButton title="Find Your Agency..."/>
                 </div>
             </div>
 
@@ -62,7 +61,7 @@ function Navbar(){
                 
                 
                 
-                </div>}
+            </div>}
 
           
             

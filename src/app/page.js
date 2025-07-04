@@ -12,8 +12,9 @@ function Home() {
   return (
    
    <>
-    <h1 className="text-3xl text-center text-red-400 mt-10">Home</h1>
-    
+    {/* <h1 className="text-3xl text-center text-red-400 mt-10">Home</h1> */}
+    {/* <Navbar /> */}
+    <HeroSection />
    
    </>
    
