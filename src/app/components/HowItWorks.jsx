@@ -4,11 +4,11 @@ import HowItWorksIcon from "./ui/HowItWorksIcons"
 
 function HowItWorks() {
   return (
-    <div className="flex justify-center items-center bg-[#F5F6FA] max-w-screen h-[90vh] mt-10">
+    <div className="flex justify-center items-center bg-[#F5F6FA] max-w-screen h-[80vh] mt-15">
       
-        <div className="w-[90%] text-center flex flex-col justify-center items-center h-[80%] m-auto max-w-screen-xl">
+        <div className="w-[90%] text-center flex flex-col justify-center items-center h-[80%] m-auto max-w-screen-xl ">
           <h1 className="font-[700] text-3xl text-[#1A2B4A]">Let's make this easy.</h1>
-          <div className="flex  items-center  justify-around w-full mt-20">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-20 w-full mt-20">
             <div>
               <HowItWorksIcon 
               title = "Tell us about your business"

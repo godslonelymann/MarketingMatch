@@ -16,6 +16,7 @@ function Home() {
     {/* <Navbar /> */}
     <HeroSection />
     <HowItWorks />
+    <AgencyTypes />
    
    </>
    
