@@ -1,0 +1,83 @@
+[33mcommit 7ccab0fcf50e89d4c62deb99754277ede024d26c[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Anurag Gaikwad <gaikwadanurag16@gmail.com>
+Date:   Tue Jul 8 17:21:37 2025 +0530
+
+    HowItWorks some changes made
+
+[33mcommit 58c4fecd67cd31b7b145c174e67528e2fa145f7f[m
+Author: Anurag Gaikwad <gaikwadanurag16@gmail.com>
+Date:   Tue Jul 8 15:34:22 2025 +0530
+
+    HowItWorks section done; responsiveness to be done
+
+[33mcommit 1785f18440b771c23c7b9a576e1ca8d92b94b9e5[m
+Author: Anurag Gaikwad <gaikwadanurag16@gmail.com>
+Date:   Mon Jul 7 17:27:13 2025 +0530
+
+    How it Works structure done. Work on design and responsiveness
+
+[33mcommit 653b17e93211b8be0565d299f654a276e72afdd8[m
+Author: Anurag Gaikwad <gaikwadanurag16@gmail.com>
+Date:   Sun Jul 6 20:23:47 2025 +0530
+
+    Update structure of How it Works Section
+
+[33mcommit 1f0f42dc446d651cb115901d403a2921d3235fa3[m
+Author: Anurag Gaikwad <gaikwadanurag16@gmail.com>
+Date:   Sat Jul 5 16:28:48 2025 +0530
+
+    Update Hero Section. Fully Responsive
+
+[33mcommit 4a6c15bdde2a8d443c17c3b0b819b246a4171d6c[m
+Author: Anurag Gaikwad <gaikwadanurag16@gmail.com>
+Date:   Fri Jul 4 19:26:58 2025 +0530
+
+    Update Hero Section; Responsiveness is yet to be completed
+
+[33mcommit accf92348629bdb2e1b0ffb258e59c9b3f511b1e[m
+Author: Anurag Gaikwad <gaikwadanurag16@gmail.com>
+Date:   Thu Jul 3 13:09:42 2025 +0530
+
+    Responsive navbar ready
+
+[33mcommit d36118d0e080f8f0c51d409fc8000ef005aae044[m
+Author: Anurag Gaikwad <gaikwadanurag16@gmail.com>
+Date:   Wed Jul 2 17:05:48 2025 +0530
+
+    Navbar Finished; work on design
+
+[33mcommit 82048e912ff6f3cd72200e34707d8b7711a7e239[m
+Author: Anurag Gaikwad <gaikwadanurag16@gmail.com>
+Date:   Wed Jul 2 13:50:31 2025 +0530
+
+    Navbar is made responsive
+
+[33mcommit f07133d1eef76a145511f29125cb1695e9b5eaab[m
+Author: Anurag Gaikwad <gaikwadanurag16@gmail.com>
+Date:   Wed Jul 2 13:23:39 2025 +0530
+
+    Update: Navbar complete
+
+[33mcommit 34f5f38a64ffcb26893dd535eaba3b38dc527951[m
+Author: Anurag Gaikwad <gaikwadanurag16@gmail.com>
+Date:   Wed Jul 2 12:39:44 2025 +0530
+
+    Update Navbar
+
+[33mcommit a711f030ac66e9354d118a0a4c51e5b00cef86a1[m
+Author: Anurag Gaikwad <gaikwadanurag16@gmail.com>
+Date:   Wed Jul 2 12:12:15 2025 +0530
+
+    add all HomePage sections
+
+[33mcommit 515d3155595c1d2057ecee112d7db44cdee26a68[m
+Author: Anurag Gaikwad <gaikwadanurag16@gmail.com>
+Date:   Tue Jul 1 22:38:48 2025 +0530
+
+    initial commit
+
+[33mcommit 35d60d8da023961bf6f166c99a17e6080a727b0f[m
+Author: Anurag Gaikwad <gaikwadanurag16@gmail.com>
+Date:   Tue Jul 1 22:29:07 2025 +0530
+
+    Initial commit from Create Next App
