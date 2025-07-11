@@ -1,12 +1,8 @@
-function AgencyTypesCard({icon, title, description}){
+function AgencyTypesCard(){
 
     return(
-       <div className="bg-[#F5F6FA]  w-[275px] text-center rounded-2xl ">
-            <div className="flex flex-col ">
-                <img src={icon} alt="" height={36} width={36} />
-                <h1>{title}</h1>
-                <p>{description}</p>
-            </div>
+       <div className="bg-[#F5F6FA] h-full w-[100%] text-center rounded-2xl ">
+            
        </div>
     );
 }
