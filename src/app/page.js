@@ -17,6 +17,8 @@ function Home() {
     <HeroSection />
     <HowItWorks />
     <AgencyTypes />
+    <Reviews />
+    <QuizCTA />
    
    </>
    
