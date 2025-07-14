@@ -4,9 +4,9 @@ import AgencyTypesCard from "./ui/AgencyTypesCard"
 function AgencyTypes() {
   return (
    <>
-    <div className="h-screen w-full flex justify-center items-center">
+    <div className="h-full w-full flex justify-center items-center">
      
-       <div className="h-[60%] w-[100%] max-w-screen-xl grid grid-cols-4 place-items-center gap-x-10">
+       <div className="h-[60%] my-40 w-[100%] max-w-screen-xl grid grid-cols-4 place-items-center gap-x-10">
           <AgencyTypesCard
           icon = "/icons/at1.png"
           title = "Behavioural Thinkers"

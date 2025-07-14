@@ -19,6 +19,8 @@ function Home() {
     <AgencyTypes />
     <Reviews />
     <QuizCTA />
+    <FinalCTA />
+    <Footer />
    
    </>
    
