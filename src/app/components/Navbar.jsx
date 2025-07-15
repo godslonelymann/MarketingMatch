@@ -19,7 +19,7 @@ function Navbar(){
     }
     return(
         <>
-            <div className="flex justify-between mx-10 mt-5 md:mx-auto max-w-screen-xl items-center text-base">
+            <div className="flex justify-between w-full mx-10 mt-5 md:mx-auto max-w-screen-xl items-center text-base ">
                 <Link 
                 className=" "
                 href="/">MarketingMatch</Link>

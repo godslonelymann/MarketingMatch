@@ -1,11 +1,18 @@
-function FindYourAgency(){
+import React from 'react'
 
-    return(
-
-        <>
-            <h1 className="text-3xl text-center text-red-400 mt-10">Find Your Agency</h1>
-        </>
-    );
+function FindYourAgency() {
+  return (
+    <>
+        <div className='h-screen w-full bg-amber-200 flex justify-center'>
+            <div className='h-1/4 w-full max-w-screen-xl bg-red-300 flex justify-center items-center flex-col'>
+                <h1 className='font-[500] text-5xl text-[#111827]'>Let's find an agency that gets you</h1>
+                <p className='font'>Answer a few quick questions. Takes 2 minutes.</p>
+            </div>
+        </div>
+    
+    </>
+    
+  )
 }
 
-export default FindYourAgency;
+export default FindYourAgency
