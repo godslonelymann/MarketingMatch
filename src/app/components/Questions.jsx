@@ -4,7 +4,7 @@ import AnswerBlock from './ui/AnswerBlock'
 function Questions() {
   return (
     <>
-        <div className='h-screen w-full max-w-screen-xl flex items-center flex-col gap-y-2 mt-10 mb-20'>
+        <div className='h-screen w-full max-w-screen-xl flex items-center flex-col gap-y-2 mt-8 mb-20'>
             <h2 className='font-[400] text-base text-[#6B7280]'>Question 1 of 6</h2>
             <h1 className='font-[500] text-3xl text-[#111827]'>What type of business are you running?</h1>
             <h2 className='font-[400] text-base text-[#4B5563]'>Helps us narrow by domain expertise</h2>
