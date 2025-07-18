@@ -7,13 +7,16 @@ import Navbar from "./components/Navbar";
 import QuizCTA from "./components/QuizCTA";
 import Reviews from "./components/Reviews";
 import "./globals.css"
+import Signup from "./Signup/page";
 
 function Home() {
   return (
    
    <>
-    {/* <h1 className="text-3xl text-center text-red-400 mt-10">Home</h1> */}
-    {/* <Navbar /> */}
+    {/* <h1 className="text-3xl text-center text-red-400 mt-10">Home</h1> 
+    */}
+    <Signup />
+    <Navbar />
     <HeroSection />
     <HowItWorks />
     <AgencyTypes />

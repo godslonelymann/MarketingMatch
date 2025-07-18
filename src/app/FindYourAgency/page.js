@@ -59,6 +59,7 @@ export default function FindYourAgency() {
                     className="h-8 w-8 mb-2"
                   />
                   <span className="text-gray-800">{opt.label}</span>
+                  <span className="text-gray-800 mt-2 font-[300]">{opt.text}</span>
                 </button>
               ))}
             </div>
