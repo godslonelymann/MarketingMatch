@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { questions } from "../data/questions";
+import Image from 'next/image';
+
 
 
 export default function FindYourAgency() {
@@ -53,7 +55,7 @@ export default function FindYourAgency() {
                   `}
                 >
                   {/* If you used public/icons/*.png, opt.icon is a string path */}
-                  <img
+                  <Image
                     src={opt.icon}
                     alt={opt.label}
                     className="h-8 w-8 mb-2"
