@@ -1,35 +1,25 @@
 // src/components/Navbar.jsx
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import CTAButton from "./ui/CTAButton";
 
 export default function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
-    <nav className="w-full bg-amber-200">
-      {/* Centered inner container */}
+    <nav className="w-full bg-white fixed">
+      {/* Top bar */}
       <div className="max-w-screen-xl mx-auto flex justify-between items-center px-4 py-5">
-        {/* Logo / Brand */}
+        {/* Logo */}
         <Link href="/" className="text-xl font-bold text-gray-900">
           MarketingMatch
         </Link>
 
-        {/* Mobile menu button (hamburger) */}
-        <button
-          onClick={() => setMenuOpen((prev) => !prev)}
-          className="md:hidden text-2xl focus:outline-none"
-          aria-label="Toggle navigation"
-        >
-          {menuOpen ? "✕" : "☰"}
-        </button>
-
-        {/* Desktop menu links */}
-        <div className="hidden md:flex items-center space-x-8 text-gray-700">
+        {/* Desktop links */}
+        <div className="hidden md:flex space-x-8 text-gray-700">
           <Link href="/HowItWorks" className="hover:text-gray-900">
-            How it Works
+            How It Works
           </Link>
           <Link href="/AgencyTypes" className="hover:text-gray-900">
             Agency Types
@@ -40,36 +30,69 @@ export default function Navbar() {
           <Link href="/Login" className="hover:text-gray-900">
             Login
           </Link>
-          <CTAButton title="Find Your Agency..." />
+          <Link
+            href="/FindYourAgency"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          >
+            Find Your Agency…
+          </Link>
         </div>
+
+        {/* Mobile hamburger */}
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className="md:hidden text-2xl focus:outline-none"
+          aria-label="Toggle menu"
+        >
+          {open ? "✕" : "☰"}
+        </button>
       </div>
 
-      {/* Mobile menu panel */}
-      {menuOpen && (
-        <div className="md:hidden bg-stone-100 p-5 space-y-4 shadow-inner">
-          {[
-            { href: "/HowItWorks", label: "How it Works" },
-            { href: "/AgencyTypes", label: "Agency Types" },
-            { href: "/About", label: "About" },
-            { href: "/Login", label: "Login" },
-            { href: "/FindYourAgency", label: "Find Your Agency...", isCta: true },
-          ].map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={
-                `block w-full text-left px-3 py-2 rounded-lg transition \${
-                  item.isCta
-                    ? "bg-blue-600 text-white hover:bg-blue-700"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`
-              }
-            >
-              {item.label}
-            </Link>
-          ))}
+      {/* Mobile panel (always in DOM, animates height) */}
+      <div
+        className={`
+          fixed
+          w-full
+          md:hidden
+          overflow-hidden
+          bg-white
+          transition-all duration-300 ease-in-out
+          ${open ? "max-h-100" : "max-h-0"}
+        `}
+      >
+        <div className="px-4 py-4 space-y-2 ">
+          <Link
+            href="/HowItWorks"
+            className="block text-gray-700  hover:bg-gray-200 px-3 py-2 transition"
+          >
+            How It Works
+          </Link>
+          <Link
+            href="/AgencyTypes"
+            className="block text-gray-700   hover:bg-gray-200 px-3 py-2  transition"
+          >
+            Agency Types
+          </Link>
+          <Link
+            href="/About"
+            className="block text-gray-700   hover:bg-gray-200 px-3 py-2  transition"
+          >
+            About
+          </Link>
+          <Link
+            href="/Login"
+            className="block text-gray-700   hover:bg-gray-200 px-3 py-2  transition"
+          >
+            Login
+          </Link>
+          <Link
+            href="/FindYourAgency"
+            className="block bg-blue-600 text-white hover:bg-blue-700 px-3 py-2 rounded-lg transition"
+          >
+            Find Your Agency…
+          </Link>
         </div>
-      )}
+      </div>
     </nav>
   );
 }

@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
+    
   },
   "dependencies": {
     "next": "15.3.4",
@@ -16,8 +17,11 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "concurrently": "^9.2.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
-    "tailwindcss": "^4"
+    "open-cli": "^8.0.0",
+    "tailwindcss": "^4",
+    "wait-on": "^8.0.3"
   }
 }
