@@ -8,23 +8,23 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="w-full bg-white fixed">
+    <nav className="fixed top-0 left-0 w-full bg-white/30 backdrop-blur-md z-50">
       {/* Top bar */}
-      <div className="max-w-screen-xl mx-auto flex justify-between items-center px-4 py-5">
+       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-3">
         {/* Logo */}
         <Link href="/" className="text-xl font-bold text-gray-900">
           MarketingMatch
         </Link>
 
         {/* Desktop links */}
-        <div className="hidden md:flex space-x-8 text-gray-700">
-          <Link href="/HowItWorks" className="hover:text-gray-900">
+        <div className="hidden md:flex md:items-center space-x-8 text-gray-700">
+          <Link href="#how-it-works" className="hover:text-gray-900">
             How It Works
           </Link>
-          <Link href="/AgencyTypes" className="hover:text-gray-900">
+          <Link href="#agency-types" className="hover:text-gray-900">
             Agency Types
           </Link>
-          <Link href="/About" className="hover:text-gray-900">
+          <Link href="#about" className="hover:text-gray-900">
             About
           </Link>
           <Link href="/Login" className="hover:text-gray-900">
@@ -49,32 +49,22 @@ export default function Navbar() {
       </div>
 
       {/* Mobile panel (always in DOM, animates height) */}
-      <div
-        className={`
-          fixed
-          w-full
-          md:hidden
-          overflow-hidden
-          bg-white
-          transition-all duration-300 ease-in-out
-          ${open ? "max-h-100" : "max-h-0"}
-        `}
-      >
-        <div className="px-4 py-4 space-y-2 ">
+       <div className={`fixed top-full inset-x-0 w-full md:hidden overflow-hidden bg-white/90 transition-all duration-300 ease-in-out ${open ? "max-h-80" : "max-h-0"}`}>
++        <div className="px-4 sm:px-6 lg:px-8 py-4 space-y-2">
           <Link
-            href="/HowItWorks"
+            href="#how-it-works"
             className="block text-gray-700  hover:bg-gray-200 px-3 py-2 transition"
           >
             How It Works
           </Link>
           <Link
-            href="/AgencyTypes"
+            href="#agency-types"
             className="block text-gray-700   hover:bg-gray-200 px-3 py-2  transition"
           >
             Agency Types
           </Link>
           <Link
-            href="/About"
+            href="#about"
             className="block text-gray-700   hover:bg-gray-200 px-3 py-2  transition"
           >
             About
