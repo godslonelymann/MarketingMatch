@@ -9,11 +9,11 @@ import { supabase } from "../../../lib/supabaseClient";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({});
-  const [showPwd, setShowPwd] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [errors, setErrors]     = useState({});
+  const [showPwd, setShowPwd]   = useState(false);
+  const [loading, setLoading]   = useState(false);
 
   function validate() {
     const errs = {};
@@ -32,26 +32,54 @@ export default function LoginPage() {
     if (!validate()) return;
 
     setLoading(true);
-    setErrors({}); // clear previous
+    setErrors({}); // clear previous errors
 
-    // 1) Attempt to sign in
-    const {
-      data: { user },
-      error: loginErr,
-    } = await supabase.auth.signInWithPassword({ email, password });
-    if (loginErr) throw loginErr;
+    try {
+      // 1) Attempt to sign in
+      const {
+        data: { user },
+        error: loginErr,
+      } = await supabase.auth.signInWithPassword({ email, password });
 
-    // only now will auth.uid() be non-null:
-    const { error: profileErr } = await supabase.from("profiles").insert([
-      {
-        id: user.id,
-        full_name: user.user_metadata.full_name,
-        role: "customer",
-      },
-    ]);
-    if (profileErr) throw profileErr;
+      if (loginErr) {
+        setErrors({ api: loginErr.message });
+        setLoading(false);
+        return;
+      }
 
-    router.push("/FindYourAgency");
+      if (!user) {
+        setErrors({ api: "Login failed. Please try again." });
+        setLoading(false);
+        return;
+      }
+
+      // 2) Insert or update profile
+      const { error: profileErr } = await supabase
+        .from("profiles")
+        .upsert(
+          {
+            id: user.id,
+            full_name: user.user_metadata?.full_name || "",
+            role: "customer",
+            email: user.email,
+          },
+          { onConflict: "id" }
+        );
+
+      if (profileErr) {
+        setErrors({ api: profileErr.message });
+        setLoading(false);
+        return;
+      }
+
+      // 3) Redirect to quiz
+      router.push("/FindYourAgency");
+    } catch (err) {
+      console.error("Unexpected error during login:", err);
+      setErrors({ api: "An unexpected error occurred. Please try again." });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

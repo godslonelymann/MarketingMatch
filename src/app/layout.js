@@ -1,5 +1,7 @@
 import { Inter } from 'next/font/google';
 import "./globals.css";
+import FindYourAgency from './FindYourAgency/page';
+import Result from './Result/page';
 
 
 // import CTAButton from './components/ui/CTAButton';
@@ -15,7 +17,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.className}>
       <body>
-       
        {children}
       </body>
     </html>

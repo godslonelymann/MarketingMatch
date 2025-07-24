@@ -31,7 +31,7 @@ export default function Navbar() {
             Login
           </Link>
           <Link
-            href="/FindYourAgency"
+            href="/Customer/Login"
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
           >
             Find Your Agency…
@@ -76,7 +76,7 @@ export default function Navbar() {
             Login
           </Link>
           <Link
-            href="/FindYourAgency"
+           href="/Customer/Login"
             className="block bg-blue-600 text-white hover:bg-blue-700 px-3 py-2 rounded-lg transition"
           >
             Find Your Agency…
