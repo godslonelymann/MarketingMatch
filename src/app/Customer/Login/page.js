@@ -4,12 +4,16 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { supabase } from "../../../lib/supabaseClient";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [showPwd, setShowPwd] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   function validate() {
     const errs = {};
@@ -23,11 +27,31 @@ export default function LoginPage() {
     return Object.keys(errs).length === 0;
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    // TODO: send login data to your API
-    console.log({ email, password });
+
+    setLoading(true);
+    setErrors({}); // clear previous
+
+    // 1) Attempt to sign in
+    const {
+      data: { user },
+      error: loginErr,
+    } = await supabase.auth.signInWithPassword({ email, password });
+    if (loginErr) throw loginErr;
+
+    // only now will auth.uid() be non-null:
+    const { error: profileErr } = await supabase.from("profiles").insert([
+      {
+        id: user.id,
+        full_name: user.user_metadata.full_name,
+        role: "customer",
+      },
+    ]);
+    if (profileErr) throw profileErr;
+
+    router.push("/FindYourAgency");
   };
 
   return (
@@ -61,17 +85,23 @@ export default function LoginPage() {
       {/* Right form panel */}
       <div className="flex-1 bg-gray-50 flex items-center justify-center p-6">
         <div className="w-full max-w-md">
-          <h1 className="text-3xl font-semibold text-gray-900">
-            Welcome Back
-          </h1>
+          <h1 className="text-3xl font-semibold text-gray-900">Welcome Back</h1>
           <p className="mt-2 text-gray-600">
             Log in to continue discovering your perfect-fit marketing agency
           </p>
 
+          {/* API error */}
+          {errors.api && (
+            <p className="mt-4 text-center text-red-600">{errors.api}</p>
+          )}
+
           <form onSubmit={handleSubmit} className="mt-6 space-y-5">
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email Address
               </label>
               <input
@@ -89,7 +119,10 @@ export default function LoginPage() {
 
             {/* Password */}
             <div className="relative">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Password
               </label>
               <input
@@ -114,7 +147,10 @@ export default function LoginPage() {
 
             {/* Forgot password link */}
             <div className="text-right">
-              <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
+              <Link
+                href="/forgot-password"
+                className="text-sm text-blue-600 hover:underline"
+              >
                 Forgot password?
               </Link>
             </div>
@@ -122,10 +158,14 @@ export default function LoginPage() {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
-              disabled={Object.keys(errors).length > 0}
+              disabled={loading}
+              className={`w-full py-3 text-white font-medium rounded-lg transition ${
+                loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
             >
-              Continue
+              {loading ? "Continuing…" : "Continue"}
             </button>
           </form>
 
@@ -144,13 +184,18 @@ export default function LoginPage() {
               width={20}
               height={20}
             />
-            <span className="text-gray-700 font-medium">Continue with Google</span>
+            <span className="text-gray-700 font-medium">
+              Continue with Google
+            </span>
           </button>
 
           {/* Sign up link */}
           <p className="mt-6 text-center text-gray-600">
-            Don&apos;t have an account?{' '}
-            <Link href="/Signup" className="text-blue-600 hover:underline">
+            Don&apos;t have an account?{" "}
+            <Link
+              href="/Customer/Signup"
+              className="text-blue-600 hover:underline"
+            >
               Sign up
             </Link>
           </p>

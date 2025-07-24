@@ -2,9 +2,11 @@
 "use client";
 
 import React from "react";
-import Navbar from "./components/Navbar";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+import Navbar from "./components/Navbar";
+import { supabase } from "../lib/supabaseClient";
 
 export default function HomePage() {
   const agencyCards = [
@@ -41,7 +43,7 @@ export default function HomePage() {
       <main className="flex flex-col">
         {/* Hero Section */}
         <section className="flex flex-col-reverse md:flex-row items-center max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-16 gap-10 mt-8">
-          <div className="flex-1 space-y-4 items-center text-center md:text-left ">
+          <div className="flex-1 space-y-4 items-center text-center md:text-left">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-none">
               We don&apos;t sell you agencies. We help you find yours
             </h1>
@@ -51,10 +53,10 @@ export default function HomePage() {
             </p>
             <div className="flex flex-col items-center sm:items-start space-y-2">
               <Link
-                href="/FindYourAgency"
-                className="w-full sm:w-auto inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+                href="/Customer/Login"
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
               >
-                Find Your Agency
+                Find Your Agency…
               </Link>
               <span className="text-sm text-gray-500 text-center">
                 Takes 2 minutes. No sales calls. No clutter.
@@ -76,9 +78,7 @@ export default function HomePage() {
         </section>
 
         {/* Three-Step Section */}
-        <section 
-        id="how-it-works"
-        className="bg-gray-50 py-16">
+        <section id="how-it-works" className="bg-gray-50 py-16">
           <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-8">
               Let's make this easy.
@@ -90,7 +90,7 @@ export default function HomePage() {
                     src="/icons/icon1.png"
                     width={30}
                     height={30}
-                    alt="icon1"
+                    alt="Step 1"
                   />
                 </div>
                 <h3 className="text-lg font-medium text-gray-900">
@@ -104,7 +104,7 @@ export default function HomePage() {
                     src="/icons/icon2.png"
                     width={30}
                     height={30}
-                    alt="icon1"
+                    alt="Step 2"
                   />
                 </div>
                 <h3 className="text-lg font-medium text-gray-900">
@@ -120,7 +120,7 @@ export default function HomePage() {
                     src="/icons/icon3.png"
                     width={30}
                     height={30}
-                    alt="icon1"
+                    alt="Step 3"
                   />
                 </div>
                 <h3 className="text-lg font-medium text-gray-900">
@@ -136,7 +136,7 @@ export default function HomePage() {
 
         {/* Agency Types Cards */}
         <section
-        id="agency-types"
+          id="agency-types"
           className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 py-20 gap-6"
         >
           {agencyCards.map((c) => (
@@ -146,9 +146,9 @@ export default function HomePage() {
             >
               <Image
                 src={c.icon}
-                height={30}
                 width={30}
-                alt="at"
+                height={30}
+                alt={c.title}
                 className="mb-10"
               />
               <h4 className="font-semibold text-gray-900 mb-8">{c.title}</h4>
@@ -161,27 +161,27 @@ export default function HomePage() {
         </section>
 
         {/* Testimonials */}
-        <section className=" bg-[#F5F6FA] py-20">
-          <div className="w-full h-full py-10 px-4 sm:px-6 lg:px-8  space-y-8 ">
-            <div className="w-full max-w-screen-xl mx-auto">
-              <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-10 text-center">
+        <section className="bg-[#F5F6FA] py-20">
+          <div className="w-full py-10 px-4 sm:px-6 lg:px-8 space-y-8">
+            <div className="max-w-screen-xl mx-auto text-center">
+              <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-10">
                 Trusted by Founders Who Move Fast — and Think Deep
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <blockquote className="bg-white p-10 rounded-xl">
                   <p className="text-gray-700 text-xl mb-4">
                     &quot;We didn&apos;t need a big agency. We needed one that
                     understood our energy. This platform nailed it.&quot;
                   </p>
-                  <h1 className="text-black font-bold">Ritesh</h1>
+                  <h3 className="text-black font-bold">Ritesh</h3>
                   <p className="text-gray-700">D2C Brand Owner</p>
                 </blockquote>
                 <blockquote className="bg-white p-10 rounded-xl">
-                  <p className="text-gray-700 mb-4 text-xl">
+                  <p className="text-gray-700 text-xl mb-4">
                     &quot;Within 10 days, we had 3 solid options. All felt
                     right. That never happens.&quot;
                   </p>
-                  <h1 className="text-black font-bold">Meenal</h1>
+                  <h3 className="text-black font-bold">Meenal</h3>
                   <p className="text-gray-700">Series A Startup</p>
                 </blockquote>
               </div>
@@ -190,11 +190,8 @@ export default function HomePage() {
         </section>
 
         {/* Quiz Teaser */}
-        <section
-          className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-20 flex flex-col items-center gap-6"
-        >
+        <section className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-20 flex flex-col items-center gap-6">
           <div className="max-w-screen-xl w-full flex flex-col items-center gap-6 md:flex-row md:justify-between md:items-center">
-            {/* Text block always centered on mobile */}
             <div className="text-center sm:text-left">
               <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">
                 What Kind of Founder Are You?
@@ -204,14 +201,12 @@ export default function HomePage() {
                 your budget.
               </p>
             </div>
-
-            {/* Button always below on mobile */}
-            <Link
-              href="/FindYourAgency"
+            <button
+              // onClick={handleFindAgency}
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
             >
               Take the 60-second Quiz
-            </Link>
+            </button>
           </div>
         </section>
 
@@ -225,12 +220,12 @@ export default function HomePage() {
               Find the one that gets your vision — and helps you scale with
               clarity.
             </p>
-            <Link
-              href="/FindYourAgency"
-              className="inline-block bg-blue-600 px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+            <button
+              // onClick={handleFindAgency}
+              className="bg-blue-600 px-6 py-3 rounded-lg hover:bg-blue-700 transition"
             >
               Start Finding
-            </Link>
+            </button>
           </div>
         </section>
 
@@ -248,12 +243,12 @@ export default function HomePage() {
               <h4 className="font-semibold text-gray-900 mb-2">Resources</h4>
               <ul className="space-y-1 text-gray-600">
                 <li>
-                  <Link href="#" className="hover:underline">
+                  <Link href="#how-it-works" className="hover:underline">
                     How It Works
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:underline">
+                  <Link href="#agency-types" className="hover:underline">
                     Agency Types
                   </Link>
                 </li>
@@ -297,15 +292,12 @@ export default function HomePage() {
                   placeholder="Enter your email"
                   className="flex-1 px-4 py-2 rounded-l-lg border border-gray-300 focus:outline-none"
                 />
-                <button
-                  type="submit"
-                  className="bg-[#1A2B4A] rounded-r-lg p-2"
-                >
-                  <img
+                <button type="submit" className="bg-[#1A2B4A] rounded-r-lg p-2">
+                  <Image
                     src="/icons/email.png"
+                    alt="email"
                     width={20}
                     height={20}
-                    alt="email"
                   />
                 </button>
               </form>

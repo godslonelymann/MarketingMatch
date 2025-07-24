@@ -27,7 +27,7 @@ export default function Navbar() {
           <Link href="#about" className="hover:text-gray-900">
             About
           </Link>
-          <Link href="/Login" className="hover:text-gray-900">
+          <Link href="/Customer/Login" className="hover:text-gray-900">
             Login
           </Link>
           <Link
@@ -70,7 +70,7 @@ export default function Navbar() {
             About
           </Link>
           <Link
-            href="/Login"
+            href="/Customer/Login"
             className="block text-gray-700   hover:bg-gray-200 px-3 py-2  transition"
           >
             Login

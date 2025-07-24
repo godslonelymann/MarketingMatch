@@ -1,15 +1,20 @@
+// src/app/customer/signup/page.jsx
 "use client";
 
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { supabase } from "../../../lib/supabaseClient";
 
 export default function SignUpPage() {
+  const router = useRouter();
   const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [errors, setErrors] = useState({});
+  const [confirm, setConfirm]   = useState("");
+  const [errors, setErrors]     = useState({});
+  const [loading, setLoading]   = useState(false);
 
   function validate() {
     const errs = {};
@@ -21,11 +26,47 @@ export default function SignUpPage() {
     return Object.keys(errs).length === 0;
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    // TODO: send signup data to your API
-    console.log({ fullName, email, password });
+    setLoading(true);
+    setErrors({}); // clear any previous API errors
+
+    // 1) Sign up via Supabase Auth, saving full name in user_metadata
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: fullName },
+      },
+    });
+    if (signUpError) {
+      setErrors({ api: signUpError.message });
+      setLoading(false);
+      return;
+    }
+
+    // 2) Extract the new user's id and email from the signup response
+    const userId    = signUpData.user.id;
+    const userEmail = signUpData.user.email;
+
+    // 3) Insert a profile record, now including email
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .insert([{
+        id:        userId,
+        full_name: fullName,
+        email:     userEmail,
+        role:      "customer"
+      }]);
+    if (profileError) {
+      setErrors({ api: profileError.message });
+      setLoading(false);
+      return;
+    }
+
+    // 4) Redirect on success
+    router.push("/FindYourAgency");
   };
 
   return (
@@ -54,6 +95,7 @@ export default function SignUpPage() {
           {/* Optional: logo or welcome graphic here */}
         </div>
       </div>
+
       <div className="flex-1 bg-gray-50 flex items-center justify-center p-6">
         <div className="w-full max-w-md">
           <h1 className="text-3xl font-semibold text-gray-900">
@@ -62,7 +104,14 @@ export default function SignUpPage() {
           <p className="mt-2 text-gray-600">
             Start discovering marketing partners who think like you do.
           </p>
+
+          {/* show API errors here */}
+          {errors.api && (
+            <p className="mt-4 text-center text-red-600">{errors.api}</p>
+          )}
+
           <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+            {/* Full Name */}
             <div>
               <label
                 htmlFor="fullName"
@@ -82,6 +131,8 @@ export default function SignUpPage() {
                 <p className="mt-1 text-sm text-red-600">{errors.fullName}</p>
               )}
             </div>
+
+            {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email Address
@@ -98,6 +149,8 @@ export default function SignUpPage() {
                 <p className="mt-1 text-sm text-red-600">{errors.email}</p>
               )}
             </div>
+
+            {/* Password */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
@@ -114,6 +167,8 @@ export default function SignUpPage() {
                 <p className="mt-1 text-sm text-red-600">{errors.password}</p>
               )}
             </div>
+
+            {/* Confirm Password */}
             <div>
               <label htmlFor="confirm" className="block text-sm font-medium text-gray-700">
                 Confirm Password
@@ -130,14 +185,18 @@ export default function SignUpPage() {
                 <p className="mt-1 text-sm text-red-600">{errors.confirm}</p>
               )}
             </div>
+
+            {/* Submit */}
             <button
               type="submit"
-              disabled={Object.keys(errors).length > 0}
-              className="w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition disabled:opacity-50 cursor-pointer"
+              disabled={loading}
+              className="w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
             >
-              Let&apos;s Go
+              {loading ? "Signing up…" : "Let's Go"}
             </button>
           </form>
+
+          {/* Social / footer links */}
           <div className="flex items-center my-6">
             <div className="flex-grow h-px bg-gray-300" />
             <span className="px-4 text-gray-500 text-sm">or continue with</span>
@@ -145,14 +204,16 @@ export default function SignUpPage() {
           </div>
           <button className="w-full flex items-center justify-center gap-2 py-2 border rounded-lg hover:shadow-md bg-white transition">
             <Image src="/icons/google.png" alt="Google logo" width={20} height={20} />
-            <span className="text-gray-700 font-medium cursor-pointer">Continue with Google</span>
+            <span className="text-gray-700 font-medium">Continue with Google</span>
           </button>
           <p className="mt-6 text-center text-gray-600">
-            Already have an account? <Link href="/Login" className="text-blue-600 hover:underline">Log in</Link>
+            Already have an account?{" "}
+            <Link href="/Customer/Login" className="text-blue-600 hover:underline">
+              Log in
+            </Link>
           </p>
         </div>
       </div>
     </div>
-  )}
-
-
+  );
+}

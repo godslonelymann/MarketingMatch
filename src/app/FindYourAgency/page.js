@@ -58,6 +58,8 @@ export default function FindYourAgency() {
                   <Image
                     src={opt.icon}
                     alt={opt.label}
+                    height={32}
+                    width={32}
                     className="h-8 w-8 mb-2"
                   />
                   <span className="text-gray-800">{opt.label}</span>
