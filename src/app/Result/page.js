@@ -2,18 +2,20 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { supabase } from "../../lib/supabaseClient";
 
 export default function Result() {
   const router = useRouter();
+  const params = useSearchParams();
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [loading, setLoading] = useState(true);
-  const [agencies, setAgencies] = useState([]);
+  const [topMatches, setTopMatches] = useState([]);
+  const [moreAgencies, setMoreAgencies] = useState([]);
 
-  // 1) Protect route
+  // 1) Auth‐guard
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session?.user) {
@@ -24,43 +26,62 @@ export default function Result() {
     });
   }, [router]);
 
-  // 2) Fetch agencies once auth check passes
+  // 2) When auth is confirmed, parse answers & fetch+score agencies
   useEffect(() => {
     if (checkingAuth) return;
 
-    const fetchAgencies = async () => {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("agencies")
-        .select("id,name,description,location,domain,tags,strengths,testimonial,icon_path,created_at")
-        .order("created_at", { ascending: false });
+    // Parse answers
+    const raw = params.get("answers") || "[]";
+    let answers;
+    try {
+      answers = JSON.parse(decodeURIComponent(raw));
+    } catch {
+      return router.replace("/FindYourAgency");
+    }
 
+    const answerTags = Object.values(answers);
+
+    const fetchAndMatch = async () => {
+      setLoading(true);
+      const { data: agencies = [], error } = await supabase
+        .from("agencies")
+        .select("*");
       if (error) {
-        console.error("Error loading agencies:", error);
-      } else {
-        setAgencies(data);
+        console.error("Error fetching agencies:", error);
+        setLoading(false);
+        return;
       }
+
+      // Simple count‐overlap scoring
+      const scored = agencies
+        .map((ag) => {
+          const score = answerTags.reduce(
+            (cnt, t) => (ag.tags.includes(t) ? cnt + 1 : cnt),
+            0
+          );
+          return { ...ag, score };
+        })
+        .filter((ag) => ag.score > 0) // drop ones with zero matches
+        .sort((a, b) => b.score - a.score);
+
+      setTopMatches(scored.slice(0, 3));
+      setMoreAgencies(scored.slice(3));
       setLoading(false);
     };
 
-    fetchAgencies();
-  }, [checkingAuth]);
+    fetchAndMatch();
+  }, [checkingAuth, params, router]);
 
-  // 3) Show loader while checking auth or fetching
   if (checkingAuth || loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex items-center justify-center h-screen">
         <p>Loading…</p>
       </div>
     );
   }
 
-  // 4) Split into top 3 and the rest
-  const topMatches = agencies.slice(0, 3);
-  const moreAgencies = agencies.slice(3);
-
   return (
-    <main className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+    <main className="bg-white py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-screen-xl mx-auto space-y-12">
         {/* Header */}
         <header className="text-center space-y-3">
@@ -71,8 +92,9 @@ export default function Result() {
             Curated based on your business type, growth stage, and mindset
           </p>
           <p className="text-gray-400">
-            Here are {agencies.length} agencies that align with your goals —
-            these top picks are ready to hit the ground running.
+            Here are {topMatches.length + moreAgencies.length} agencies that
+            align with your goals — these top picks are ready to hit the ground
+            running.
           </p>
         </header>
 
@@ -110,22 +132,23 @@ export default function Result() {
                 </div>
 
                 <h4 className="mt-6 font-medium text-gray-800">Key Strengths</h4>
-                <ul className="list-none mt-2 space-y-1">
+                <ul className="mt-2 space-y-1">
                   {ag.strengths.map((s) => (
-                    <li key={s} className="flex items-center text-gray-700">
-                      <span className="text-green-500 mr-2">✓</span>
-                      {s}
+                    <li
+                      key={s}
+                      className="flex items-center text-gray-700 space-x-2"
+                    >
+                      <span className="text-green-500">✓</span>
+                      <span>{s}</span>
                     </li>
                   ))}
                 </ul>
 
-                {ag.testimonial && (
-                  <blockquote className="mt-6 p-4 bg-gray-50 rounded text-gray-600 italic flex-1">
-                    {ag.testimonial}
-                  </blockquote>
-                )}
+                <blockquote className="mt-6 italic text-gray-600 flex-1">
+                  {ag.testimonial}
+                </blockquote>
 
-                <div className="mt-6 flex space-x-4">
+                <div className="mt-auto flex space-x-4 pt-6">
                   <button className="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
                     Book Free Call
                   </button>
@@ -158,18 +181,19 @@ export default function Result() {
                     <p className="text-gray-500 text-sm mt-2">
                       📍 {ag.location}
                     </p>
-                    <ul className="list-none space-y-1 mt-3 text-gray-700">
+                    <ul className="mt-3 space-y-1 text-gray-700">
                       {ag.strengths.map((s) => (
-                        <li key={s} className="flex items-center">
-                          <span className="text-green-500 mr-2">✓</span>
-                          {s}
+                        <li key={s} className="flex items-center space-x-2">
+                          <span className="text-green-500">✓</span>
+                          <span>{s}</span>
                         </li>
                       ))}
                     </ul>
                     <span className="inline-block bg-gray-100 text-gray-800 text-xs font-medium px-2 py-1 rounded mt-4">
-                      {ag.tags[0] /* example use of first tag */}
+                      {ag.tags[0]}
                     </span>
                   </div>
+
                   <div className="mt-6 flex gap-4">
                     <Link
                       href="#"

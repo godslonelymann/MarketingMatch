@@ -1,7 +1,7 @@
 // src/app/login/page.jsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -14,6 +14,15 @@ export default function LoginPage() {
   const [errors, setErrors]     = useState({});
   const [showPwd, setShowPwd]   = useState(false);
   const [loading, setLoading]   = useState(false);
+
+  // If already logged in, redirect to quiz
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        router.replace("/FindYourAgency");
+      }
+    });
+  }, [router]);
 
   function validate() {
     const errs = {};
@@ -32,54 +41,46 @@ export default function LoginPage() {
     if (!validate()) return;
 
     setLoading(true);
-    setErrors({}); // clear previous errors
+    setErrors({});
 
-    try {
-      // 1) Attempt to sign in
-      const {
-        data: { user },
-        error: loginErr,
-      } = await supabase.auth.signInWithPassword({ email, password });
+    // 1) Attempt to sign in
+    const {
+      data: { user },
+      error: loginErr,
+    } = await supabase.auth.signInWithPassword({ email, password });
 
-      if (loginErr) {
-        setErrors({ api: loginErr.message });
-        setLoading(false);
-        return;
-      }
-
-      if (!user) {
-        setErrors({ api: "Login failed. Please try again." });
-        setLoading(false);
-        return;
-      }
-
-      // 2) Insert or update profile
-      const { error: profileErr } = await supabase
-        .from("profiles")
-        .upsert(
-          {
-            id: user.id,
-            full_name: user.user_metadata?.full_name || "",
-            role: "customer",
-            email: user.email,
-          },
-          { onConflict: "id" }
-        );
-
-      if (profileErr) {
-        setErrors({ api: profileErr.message });
-        setLoading(false);
-        return;
-      }
-
-      // 3) Redirect to quiz
-      router.push("/FindYourAgency");
-    } catch (err) {
-      console.error("Unexpected error during login:", err);
-      setErrors({ api: "An unexpected error occurred. Please try again." });
-    } finally {
+    if (loginErr) {
+      setErrors({ api: loginErr.message });
       setLoading(false);
+      return;
     }
+    if (!user) {
+      setErrors({ api: "Login failed. Please try again." });
+      setLoading(false);
+      return;
+    }
+
+    // 2) Upsert profile row (RLS policy allows only own id)
+    const { error: profileErr } = await supabase
+      .from("profiles")
+      .upsert(
+        {
+          id: user.id,
+          full_name: user.user_metadata?.full_name || "",
+          role: "customer",
+          email: user.email,
+        },
+        { onConflict: "id" }
+      );
+    if (profileErr) {
+      setErrors({ api: profileErr.message });
+      setLoading(false);
+      return;
+    }
+
+    // 3) Redirect to quiz
+    router.push("/FindYourAgency");
+    setLoading(false);
   };
 
   return (
