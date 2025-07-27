@@ -18,10 +18,10 @@ export default function Navbar() {
 
         {/* Desktop links */}
         <div className="hidden md:flex md:items-center space-x-8 text-gray-700">
-          <Link href="#how-it-works" className="hover:text-gray-900">
+          <Link href="/HowItWorks" className="hover:text-gray-900">
             How It Works
           </Link>
-          <Link href="#agency-types" className="hover:text-gray-900">
+          <Link href="/AgencyTypes" className="hover:text-gray-900">
             Agency Types
           </Link>
           <Link href="#about" className="hover:text-gray-900">
@@ -52,13 +52,13 @@ export default function Navbar() {
        <div className={`fixed top-full inset-x-0 w-full md:hidden overflow-hidden bg-white/90 transition-all duration-300 ease-in-out ${open ? "max-h-80" : "max-h-0"}`}>
 +        <div className="px-4 sm:px-6 lg:px-8 py-4 space-y-2">
           <Link
-            href="#how-it-works"
+            href="/HowItWorks"
             className="block text-gray-700  hover:bg-gray-200 px-3 py-2 transition"
           >
             How It Works
           </Link>
           <Link
-            href="#agency-types"
+            href="/AgencyTypes"
             className="block text-gray-700   hover:bg-gray-200 px-3 py-2  transition"
           >
             Agency Types
