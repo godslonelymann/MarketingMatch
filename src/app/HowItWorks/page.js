@@ -144,7 +144,7 @@ export default function HowItWorks() {
               onClick={handleBegin}
               className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-blue-700 transition"
             >
-              Let’s Begin
+              Let&apos;s Begin
             </button>
             <p className="mt-2 text-gray-500 text-sm">
               Takes 2 minutes. No sales calls.

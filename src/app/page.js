@@ -107,7 +107,7 @@ export default function HomePage() {
         <section id="how-it-works" className="bg-gray-50 py-16">
           <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-8">
-              Let's make this easy.
+              Let&apos;s make this easy.
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
               <div className="space-y-4">
