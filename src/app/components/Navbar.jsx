@@ -29,7 +29,7 @@ export default function Navbar() {
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-3">
         {/* Logo */}
         <Link href="/" className="text-xl font-bold text-gray-900">
-          MarketingMatch
+          mindmatch
         </Link>
 
         {/* Desktop links */}

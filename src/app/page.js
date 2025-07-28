@@ -77,12 +77,7 @@ export default function HomePage() {
               your business and think like you do.
             </p>
             <div className="flex flex-col items-center sm:items-start space-y-2">
-              {/* <Link
-                href="/Login"
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-              >
-                Find Your Agency
-              </Link> */}
+             
               <button 
               onClick={goFind}
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
@@ -220,26 +215,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Quiz Teaser
-        <section className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-20 flex flex-col items-center gap-6">
-          <div className="max-w-screen-xl w-full flex flex-col items-center gap-6 md:flex-row md:justify-between md:items-center">
-            <div className="text-center sm:text-left">
-              <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">
-                What Kind of Founder Are You?
-              </h2>
-              <p className="mt-2 text-gray-600">
-                Discover agencies that fit your leadership energy — not just
-                your budget.
-              </p>
-            </div>
-            <button
-              // onClick={handleFindAgency}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
-            >
-              Take the 60-second Quiz
-            </button>
-          </div>
-        </section> */}
+        
 
         {/* Dark CTA Footer */}
         <section className="bg-[#1A2B4A] text-white py-20">
