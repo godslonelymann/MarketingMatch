@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# MarketingMatch
 
-## Getting Started
+**MarketingMatch** is a full-stack matchmaking platform designed to connect customers with marketing agencies based on specific needs, preferences, and business attributes.
 
-First, run the development server:
+## 🔥 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Role-based Authentication (Customer & Agency)
+- Smart Matchmaking Quiz
+- Dynamic Agency Recommendations
+- One-time Agency Onboarding
+- Supabase Integration for Database & Auth
+- Fully Responsive UI with Next.js & Tailwind CSS
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+├── app/
+│   ├── Login/                # Login Page
+│   ├── Signup/               # Signup Page
+│   ├── SelectRole/          # Role selection after signup
+│   ├── Agency/Onboarding/    # One-time agency onboarding form
+│   ├── Result/               # Matched agency results page
+│   ├── FindYourAgency/       # Quiz to find matching agencies
+│   
+├── components/
+│   └── Navbar.jsx            # Responsive top navigation bar
+├── data/
+│   └── questions.js          # Questions used for matchmaking
+├── lib/
+│   └── supabaseClient.js     # Supabase client setup
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 🧠 Pages and Logic
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### `Login` / `Signup`
+- Common Supabase authentication.
+- After signup → redirected to `/SelectRole` page.
+- Role is stored in the `profiles` table.
 
-## Learn More
+### `select-role`
+- Shown **once** post-signup.
+- Saves user role in Supabase.
+- Redirects:
+  - If `Customer` → `/FindYourAgency`
+  - If `Agency` → `/Agency/Onboarding`
 
-To learn more about Next.js, take a look at the following resources:
+### `FindYourAgency`
+- Quiz-based form
+- Records answers & encodes them to pass via URL
+- Redirects to `/Result`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### `Result`
+- Fetches all agencies from Supabase
+- Scores them based on answer-tag overlap
+- Renders:
+  - Top 3 matches
+  - Other potential matches
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### `Agency/Onboarding`
+- Agency fills in:
+  - Name, location, domain
+  - Strengths, tags, testimonial
+- Data is saved in `agencies` table
+- Only shown once per agency
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🧾 Supabase Tables
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### `profiles`
+Stores user role information.
+```sql
+CREATE TABLE profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id),
+  role TEXT
+);
+```
+
+### `agencies`
+Stores agency onboarding data.
+```sql
+CREATE TABLE agencies (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  owner_id UUID REFERENCES auth.users(id),
+  name TEXT,
+  description TEXT,
+  location TEXT,
+  domain TEXT,
+  tags TEXT[],
+  strengths TEXT[],
+  testimonial TEXT
+);
+```
+
+---
+
+## 🚪 Logout Example
+```js
+await supabase.auth.signOut();
+router.push("/");  # Redirect to Home Page.
+```
+
+---
+
+## 🛠 Tech Stack
+
+- **Frontend:** Next.js 13 App Router + Tailwind CSS
+- **Backend:** Supabase (Auth + DB)
+- **State Management:** useState, useEffect
+
+---
+
