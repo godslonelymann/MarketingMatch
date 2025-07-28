@@ -1,7 +1,7 @@
 // src/app/page.jsx
 "use client";
 
-import React from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -9,6 +9,31 @@ import Navbar from "./components/Navbar";
 import { supabase } from "../lib/supabaseClient";
 
 export default function HomePage() {
+  const router = useRouter();
+  const [session, setSession] = useState(null);
+
+  // on mount & on auth changes, keep session in state
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+    const { data: listener } = supabase.auth.onAuthStateChange((_, sess) => {
+      setSession(sess);
+    });
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  // shared handler for all "protected" buttons/links
+  const goFind = (e) => {
+    e.preventDefault();
+    if (session?.user) {
+      router.push("/FindYourAgency");
+    } else {
+      router.push("/Login");
+    }
+  };
+  
+  
   const agencyCards = [
     {
       icon: "/icons/at1.png",
@@ -52,12 +77,18 @@ export default function HomePage() {
               your business and think like you do.
             </p>
             <div className="flex flex-col items-center sm:items-start space-y-2">
-              <Link
-                href="/Customer/Login"
+              {/* <Link
+                href="/Login"
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
               >
-                Find Your Agency…
-              </Link>
+                Find Your Agency
+              </Link> */}
+              <button 
+              onClick={goFind}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+              >
+                Find Your Agency
+              </button>
               <span className="text-sm text-gray-500 text-center">
                 Takes 2 minutes. No sales calls. No clutter.
               </span>
@@ -189,7 +220,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Quiz Teaser */}
+        {/* Quiz Teaser
         <section className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-20 flex flex-col items-center gap-6">
           <div className="max-w-screen-xl w-full flex flex-col items-center gap-6 md:flex-row md:justify-between md:items-center">
             <div className="text-center sm:text-left">
@@ -208,7 +239,7 @@ export default function HomePage() {
               Take the 60-second Quiz
             </button>
           </div>
-        </section>
+        </section> */}
 
         {/* Dark CTA Footer */}
         <section className="bg-[#1A2B4A] text-white py-20">
@@ -220,12 +251,12 @@ export default function HomePage() {
               Find the one that gets your vision — and helps you scale with
               clarity.
             </p>
-            <button
-              // onClick={handleFindAgency}
-              className="bg-blue-600 px-6 py-3 rounded-lg hover:bg-blue-700 transition"
-            >
-              Start Finding
-            </button>
+             <button 
+              onClick={goFind}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+              >
+                Start Finding
+              </button>
           </div>
         </section>
 

@@ -1,11 +1,10 @@
-// src/app/results/page.jsx
 "use client";
 
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { supabase } from "../../lib/supabaseClient";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function Result() {
   const router = useRouter();
@@ -15,53 +14,43 @@ export default function Result() {
   const [topMatches, setTopMatches] = useState([]);
   const [moreAgencies, setMoreAgencies] = useState([]);
 
-  // 1) Auth‐guard
+  // 1) Protect route
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session?.user) {
-        router.replace("/Customer/Login");
+        router.replace("/Login");
       } else {
         setCheckingAuth(false);
       }
     });
   }, [router]);
 
-  // 2) When auth is confirmed, parse answers & fetch+score agencies
+  // 2) Once auth ok, parse answers & score
   useEffect(() => {
     if (checkingAuth) return;
 
-    // Parse answers
-    const raw = params.get("answers") || "[]";
+    const raw = params.get("answers");
+    if (!raw) return router.replace("/FindYourAgency");
+
     let answers;
     try {
       answers = JSON.parse(decodeURIComponent(raw));
     } catch {
       return router.replace("/FindYourAgency");
     }
+    const tagsToMatch = Object.values(answers);
 
-    const answerTags = Object.values(answers);
-
-    const fetchAndMatch = async () => {
+    const runMatch = async () => {
       setLoading(true);
-      const { data: agencies = [], error } = await supabase
-        .from("agencies")
-        .select("*");
-      if (error) {
-        console.error("Error fetching agencies:", error);
-        setLoading(false);
-        return;
-      }
+      const { data: agencies = [] } = await supabase.from("agencies").select("*");
 
-      // Simple count‐overlap scoring
+      // score = number of overlapping tags
       const scored = agencies
-        .map((ag) => {
-          const score = answerTags.reduce(
-            (cnt, t) => (ag.tags.includes(t) ? cnt + 1 : cnt),
-            0
-          );
-          return { ...ag, score };
-        })
-        .filter((ag) => ag.score > 0) // drop ones with zero matches
+        .map((ag) => ({
+          ...ag,
+          score: tagsToMatch.reduce((c, t) => (ag.tags.includes(t) ? c + 1 : c), 0),
+        }))
+        .filter((ag) => ag.score > 0)
         .sort((a, b) => b.score - a.score);
 
       setTopMatches(scored.slice(0, 3));
@@ -69,8 +58,13 @@ export default function Result() {
       setLoading(false);
     };
 
-    fetchAndMatch();
+    runMatch();
   }, [checkingAuth, params, router]);
+
+   const handleLogout = async () => {
+      await supabase.auth.signOut();
+      router.push("/");
+    };
 
   if (checkingAuth || loading) {
     return (
@@ -81,7 +75,15 @@ export default function Result() {
   }
 
   return (
-    <main className="bg-white py-16 px-4 sm:px-6 lg:px-8">
+    <main className="bg-white py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-end">
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+        >
+          Log Out
+        </button>
+      </div>
       <div className="max-w-screen-xl mx-auto space-y-12">
         {/* Header */}
         <header className="text-center space-y-3">
@@ -93,8 +95,7 @@ export default function Result() {
           </p>
           <p className="text-gray-400">
             Here are {topMatches.length + moreAgencies.length} agencies that
-            align with your goals — these top picks are ready to hit the ground
-            running.
+            align with your goals.
           </p>
         </header>
 
@@ -219,8 +220,7 @@ export default function Result() {
           <p className="text-gray-800 mb-4">
             Need help deciding?
             <br />
-            Book a free 15-min clarity call and we’ll help you choose the right
-            partner.
+            Book a free 15-min clarity call.
           </p>
           <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
             Schedule Call

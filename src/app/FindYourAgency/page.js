@@ -1,3 +1,4 @@
+// src/app/FindYourAgency/page.jsx
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -6,7 +7,7 @@ import { supabase } from "../../lib/supabaseClient";
 import { questions } from "../data/questions";
 import Image from "next/image";
 
-export default function FindYourAgencyPage() {
+export default function FindYourAgency() {
   const router = useRouter();
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [answers, setAnswers] = useState({});
@@ -15,7 +16,7 @@ export default function FindYourAgencyPage() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session?.user) {
-        router.replace("/Customer/Login");
+        router.replace("/Login");
       } else {
         setCheckingAuth(false);
       }
@@ -23,14 +24,20 @@ export default function FindYourAgencyPage() {
   }, [router]);
 
   if (checkingAuth) {
-    return null; // or a loader
+    return null; // or your loading spinner
   }
 
   // 2) Record an answer
   const handleSelect = (qId, label) =>
     setAnswers((prev) => ({ ...prev, [qId]: label }));
 
-  // 3) When all questions done, go to results
+  // 3) Logout handler
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/Login");
+  };
+
+  // 4) When all answered, encode and navigate to results
   const handleSubmit = () => {
     const payload = encodeURIComponent(JSON.stringify(answers));
     router.push(`/Result?answers=${payload}`);
@@ -38,6 +45,16 @@ export default function FindYourAgencyPage() {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Logout button */}
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-end">
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+        >
+          Log Out
+        </button>
+      </div>
+
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
 
         {/* Hero */}
@@ -71,7 +88,7 @@ export default function FindYourAgencyPage() {
                   key={opt.label}
                   onClick={() => handleSelect(q.id, opt.label)}
                   className={`
-                    flex items-center space-x-4 p-10 border rounded-lg transition-colors duration-200
+                    flex items-center space-x-4 p-8 border rounded-lg transition-colors duration-200
                     ${
                       answers[q.id] === opt.label
                         ? "border-blue-600 bg-blue-50"
@@ -102,14 +119,8 @@ export default function FindYourAgencyPage() {
           </div>
         ))}
 
-        {/* Final CTA */}
+        {/* Submit CTA */}
         <div className="text-center space-y-4">
-          <p className="text-gray-700 text-3xl">
-            Done! We&apos;re building your shortlist...
-          </p>
-          <p className="text-gray-700 text-base">
-          Finding agencies that match your mindset, budget, and business goals.
-          </p>
           <button
             onClick={handleSubmit}
             disabled={Object.keys(answers).length < questions.length}

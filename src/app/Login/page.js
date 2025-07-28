@@ -5,9 +5,9 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { supabase } from "../../../lib/supabaseClient";
+import { supabase } from "../../lib/supabaseClient";
 
-export default function LoginPage() {
+export default function Login() {
   const router = useRouter();
   const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
@@ -15,13 +15,35 @@ export default function LoginPage() {
   const [showPwd, setShowPwd]   = useState(false);
   const [loading, setLoading]   = useState(false);
 
-  // If already logged in, redirect to quiz
+  // If already logged in, check profile & redirect
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
+    const check = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session?.user) return;
+
+      // fetch your user’s role from profiles
+      const { data: profile, error: profErr } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", session.user.id)
+        .single();
+
+      if (profErr) {
+        console.error("Failed to load profile:", profErr);
+        return router.replace("/FindYourAgency");
+      }
+
+      if (profile.role === "agency") {
+        // maybe send agencies to their onboarding or dashboard
+        router.replace("/Agency/Onboarding");
+      } else {
+        // customer → send them to the quiz
         router.replace("/FindYourAgency");
       }
-    });
+    };
+    check();
   }, [router]);
 
   function validate() {
@@ -60,26 +82,31 @@ export default function LoginPage() {
       return;
     }
 
-    // 2) Upsert profile row (RLS policy allows only own id)
-    const { error: profileErr } = await supabase
-      .from("profiles")
-      .upsert(
-        {
-          id: user.id,
-          full_name: user.user_metadata?.full_name || "",
-          role: "customer",
-          email: user.email,
-        },
-        { onConflict: "id" }
-      );
-    if (profileErr) {
-      setErrors({ api: profileErr.message });
+    //Fetch profile row
+    const {data: profile, error: profErr} = await 
+    supabase  
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+
+    if (profErr){
+      setErrors({api: profErr.message});
       setLoading(false);
       return;
     }
 
-    // 3) Redirect to quiz
-    router.push("/FindYourAgency");
+    //Redirect based on role
+    if(profile?.role === "agency"){
+      router.push("/Agency/Onboarding");
+
+    } else if (profile?.role === "customer"){
+      router.push("/FindYourAgency");
+    } else {
+      router.push("/SelectRole");
+
+    }
+
     setLoading(false);
   };
 
@@ -222,7 +249,7 @@ export default function LoginPage() {
           <p className="mt-6 text-center text-gray-600">
             Don&apos;t have an account?{" "}
             <Link
-              href="/Customer/Signup"
+              href="/Signup"
               className="text-blue-600 hover:underline"
             >
               Sign up
